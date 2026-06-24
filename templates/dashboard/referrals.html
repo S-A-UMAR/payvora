@@ -1,9 +1,10 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Referral Network – Payvora{% endblock %}
 {% block header_title %}Referral Network{% endblock %}
 
 {% block dash_content %}
-<h1 class="page-title">🤝 Refer &amp; Earn</h1>
+<h1 class="page-title">{% icon 'referral' %} Refer &amp; Earn</h1>
 <p class="page-subtitle">Invite your friends to Payvora and earn commissions on every purchase they make.</p>
 
 <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">
@@ -17,7 +18,7 @@
         <span id="refLink" style="font-family: monospace; font-size: 0.9rem; color: var(--primary-light); word-break: break-all;">
           {{ request.scheme }}://{{ request.get_host }}{% url 'register' %}?ref={{ profile.referral_code }}
         </span>
-        <button id="copyRefLink" class="btn btn-outline btn-sm" style="flex-shrink: 0;">📋 Copy</button>
+        <button id="copyRefLink" class="btn btn-outline btn-sm" style="flex-shrink: 0;">{% icon 'copy' %} Copy</button>
       </div>
     </div>
 

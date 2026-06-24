@@ -1,8 +1,9 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}My Wallet – Payvora{% endblock %}
 {% block header_title %}My Wallet{% endblock %}
 {% block dash_content %}
-<h1 class="page-title">💳 My Wallet</h1>
+<h1 class="page-title">{% icon 'wallet' %} My Wallet</h1>
 <p class="page-subtitle">Manage your funds and view transaction history</p>
 
 <div class="wallet-hero">
@@ -11,10 +12,10 @@
     <div class="wallet-amount">₦{{ wallet.balance|floatformat:2 }}</div>
     <div style="font-size:0.82rem; color:rgba(255,255,255,0.7); margin-bottom:1rem;">
       Cashback Balance: ₦{{ wallet.cashback_balance|floatformat:2 }}
-      <a href="{% url 'rewards' %}" style="color:rgba(255,255,255,0.9); text-decoration:underline; margin-left:0.5rem;">Redeem →</a>
+      <a href="{% url 'rewards' %}" style="color:rgba(255,255,255,0.9); text-decoration:underline; margin-left:0.5rem;">Redeem {% icon 'arrow-right' %}</a>
     </div>
     <div class="wallet-actions">
-      <button onclick="document.getElementById('fundModal').style.display='flex'" class="btn btn-accent">+ Fund Wallet</button>
+      <button onclick="document.getElementById('fundModal').style.display='flex'" class="btn btn-accent">{% icon 'fund' %} Fund Wallet</button>
     </div>
   </div>
 </div>
@@ -22,7 +23,7 @@
 <!-- Fund Modal -->
 <div id="fundModal" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; backdrop-filter:blur(4px);">
   <div class="card" style="max-width:420px; width:90%; position:relative; animation: fadeUp 0.3s ease;">
-    <button onclick="document.getElementById('fundModal').style.display='none'" style="position:absolute; top:1rem; right:1rem; background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted);">✕</button>
+    <button onclick="document.getElementById('fundModal').style.display='none'" style="position:absolute; top:1rem; right:1rem; background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted);">{% icon 'close' %}</button>
     <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:0.25rem;">Fund Your Wallet</h2>
     <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1.5rem;">Securely add funds via our simulated Paystack checkout.</p>
     <form method="post" action="{% url 'fund_wallet' %}">
@@ -40,7 +41,7 @@
         <input type="number" name="amount" id="fund_amount" class="form-control" placeholder="e.g. 2000" min="100" required />
         <small style="color:var(--text-muted); font-size:0.75rem; margin-top:0.3rem; display:block;">Minimum: ₦100. 1% cashback on every funding.</small>
       </div>
-      <button type="submit" class="btn btn-primary btn-block">Continue to Checkout →</button>
+      <button type="submit" class="btn btn-primary btn-block">Continue to Checkout {% icon 'arrow-right' %}</button>
     </form>
   </div>
 </div>
@@ -54,7 +55,7 @@
   {% for txn in transactions %}
   <div class="txn-item">
     <div class="txn-icon {% if txn.type == 'fund' %}fund{% elif txn.status == 'failed' %}failed{% elif txn.type == 'refund' %}refund{% else %}purchase{% endif %}">
-      {% if txn.type == 'fund' %}💰{% elif txn.service == 'data' %}📶{% elif txn.service == 'airtime' %}📞{% elif txn.service == 'electricity' %}⚡{% elif txn.service == 'tv' %}📺{% elif txn.service == 'exam' %}📝{% elif txn.type == 'cashback_redeem' %}🎁{% else %}💳{% endif %}
+      {% if txn.type == 'fund' %}{% icon 'fund' size='24' %}{% elif txn.service == 'data' %}{% icon 'data' size='24' %}{% elif txn.service == 'airtime' %}{% icon 'phone' size='24' %}{% elif txn.service == 'electricity' %}{% icon 'electricity' size='24' %}{% elif txn.service == 'tv' %}{% icon 'tv' size='24' %}{% elif txn.service == 'exam' %}{% icon 'exam' size='24' %}{% elif txn.type == 'cashback_redeem' %}{% icon 'rewards' size='24' %}{% else %}{% icon 'wallet' size='24' %}{% endif %}
     </div>
     <div class="txn-desc">
       <div class="txn-name">{{ txn.details|truncatechars:55 }}</div>
@@ -69,7 +70,7 @@
   </div>
   {% empty %}
   <div class="empty-state">
-    <div class="empty-icon">📋</div>
+    <div class="empty-icon">{% icon 'wallet' size='48' %}</div>
     <p>No transactions yet. Fund your wallet and start using Payvora!</p>
   </div>
   {% endfor %}

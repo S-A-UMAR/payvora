@@ -1,9 +1,10 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Auto-Renew Schedules – Payvora{% endblock %}
 {% block header_title %}Auto-Renew Schedules{% endblock %}
 
 {% block dash_content %}
-<h1 class="page-title">🔄 Auto-Renew Subscriptions</h1>
+<h1 class="page-title">{% icon 'autorenew' %} Auto-Renew Subscriptions</h1>
 <p class="page-subtitle">Schedule automatic data renewals and never worry about running out of internet data again.</p>
 
 <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">

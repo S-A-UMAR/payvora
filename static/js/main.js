@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateThemeIcon() {
     if (!themeBtn) return;
     const isLight = body.classList.contains('light-mode');
-    themeBtn.textContent = isLight ? '🌙' : '☀️';
     themeBtn.title = isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+    // Icon is already rendered by template, just update the title
   }
 
   /* ---------- Mobile Sidebar Toggle ---------- */
@@ -270,12 +270,13 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Copy referral link ---------- */
   const copyRefBtn = document.getElementById('copyRefLink');
   if (copyRefBtn) {
+    const originalText = copyRefBtn.innerHTML;
     copyRefBtn.addEventListener('click', () => {
       const link = document.getElementById('refLink')?.textContent?.trim();
       if (link) {
         navigator.clipboard.writeText(link).then(() => {
-          copyRefBtn.textContent = '✅ Copied!';
-          setTimeout(() => copyRefBtn.textContent = '📋 Copy', 2000);
+          copyRefBtn.textContent = 'Copied!';
+          setTimeout(() => copyRefBtn.innerHTML = originalText, 2000);
         });
       }
     });

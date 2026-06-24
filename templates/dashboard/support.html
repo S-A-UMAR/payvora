@@ -1,9 +1,10 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Support Center – Payvora{% endblock %}
 {% block header_title %}Support Center{% endblock %}
 
 {% block dash_content %}
-<h1 class="page-title">🎧 Support Center</h1>
+<h1 class="page-title">{% icon 'support' %} Support Center</h1>
 <p class="page-subtitle">Need help? Open a support ticket, and our team will get back to you within 24 hours.</p>
 
 <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">

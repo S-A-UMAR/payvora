@@ -9,9 +9,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.urls import reverse
 from django.db.models import Sum, Count
+from django.db import transaction
 from django.utils import timezone
 import datetime
 
@@ -59,9 +61,9 @@ def add_xp_and_notify(user, xp):
     if leveled_up:
         Notification.objects.create(
             user=user,
-            title=f'🎉 Level Up! You are now Level {profile.level}',
+            title=f'Level Up! You are now Level {profile.level}',
             message='Keep transacting to unlock more badges and rewards!',
-            icon='⭐'
+            icon='admin'
         )
 
 # ── normal UI dashboard views ──────────────────────────────────────────────
@@ -151,9 +153,9 @@ def process_payment(request):
             
             Notification.objects.create(
                 user=request.user,
-                title='Wallet Funded ✅',
+                title='Wallet Funded',
                 message=f'₦{amount:,.2f} has been credited to your Payvora wallet. (Cashback: ₦{cashback:,.2f})',
-                icon='💰'
+                icon='fund'
             )
             messages.success(request, f'₦{amount:,.2f} successfully added to your wallet!')
         else:
@@ -161,9 +163,9 @@ def process_payment(request):
             txn.save()
             Notification.objects.create(
                 user=request.user,
-                title='Payment Failed ❌',
+                title='Payment Failed',
                 message=f'Your payment of ₦{amount:,.2f} was not successful. Please try again.',
-                icon='❌'
+                icon='error'
             )
             messages.error(request, 'Payment failed. Your wallet was not debited.')
         return redirect('wallet')
@@ -669,7 +671,7 @@ class MonnifyWebhookView(APIView):
                     user=user,
                     title='Wallet Funded via Transfer ✅',
                     message=f'Your virtual transfer of ₦{amount:,.2f} was successful. (Cashback: ₦{cashback:,.2f})',
-                    icon='💰'
+                    icon='fund'
                 )
                 logger.info(f"Successfully processed Monnify webhook for user {user.username}, amount: {amount}")
                 return Response({"status": "success"}, status=status.HTTP_200_OK)
@@ -737,7 +739,7 @@ class PaystackWebhookView(APIView):
                     user=user,
                     title='Wallet Funded via Paystack ✅',
                     message=f'Your card payment of ₦{amount:,.2f} was successful. (Cashback: ₦{cashback:,.2f})',
-                    icon='💰'
+                    icon='fund'
                 )
                 logger.info(f"Successfully processed Paystack webhook for user {user.username}, amount: {amount}")
                 return Response({"status": "success"}, status=status.HTTP_200_OK)

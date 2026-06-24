@@ -57,9 +57,9 @@ def register_view(request):
         # Welcome notification
         Notification.objects.create(
             user=user,
-            title='Welcome to Payvora! 🎉',
+            title='Welcome to Payvora!',
             message='Your account has been created. Fund your wallet to get started!',
-            icon='🎉',
+            icon='info',
         )
 
         login(request, user)
