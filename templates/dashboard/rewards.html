@@ -1,0 +1,150 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Rewards &amp; Achievements – Payvora{% endblock %}
+{% block header_title %}Rewards &amp; Badges{% endblock %}
+
+{% block dash_content %}
+<style>
+  .progress-container {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .progress-bar-bg {
+    background: rgba(255,255,255,0.05);
+    height: 12px;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 0.75rem;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+  .progress-bar-fill {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    height: 100%;
+    border-radius: 99px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .badge-card {
+    background: var(--bg-card2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+    transition: all var(--transition);
+    position: relative;
+  }
+  .badge-card.locked {
+    opacity: 0.5;
+    filter: grayscale(80%);
+  }
+  .badge-card.unlocked {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(0, 212, 170, 0.12);
+  }
+  .badge-icon {
+    font-size: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .badge-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .badge-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .badge-status-tag {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.15rem 0.4rem;
+    border-radius: 99px;
+  }
+  .status-unlocked {
+    background: rgba(0, 212, 170, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(0, 212, 170, 0.3);
+  }
+  .status-locked {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+</style>
+
+<h1 class="page-title">🏆 Rewards &amp; Badges</h1>
+<p class="page-subtitle">Earn experience points (XP) and cashback for every transaction, level up, and unlock achievements.</p>
+
+<div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">
+  
+  <div>
+    <!-- Level progress tracker -->
+    <div class="progress-container">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text);">
+          ⭐ Level {{ profile.level }}
+        </span>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">
+          {{ xp_in_level }} / 100 XP to Level {{ profile.level|add:1 }}
+        </span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: {{ level_percent }}%;"></div>
+      </div>
+    </div>
+
+    <!-- Achievements Badges Grid -->
+    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; margin-top: 2rem;">Unlocked Achievements</h3>
+    <div class="badges-grid">
+      {% for badge in all_badges %}
+        <div class="badge-card {% if badge.id in user_badges %}unlocked{% else %}locked{% endif %}">
+          {% if badge.id in user_badges %}
+            <span class="badge-status-tag status-unlocked">Unlocked</span>
+          {% else %}
+            <span class="badge-status-tag status-locked">Locked</span>
+          {% endif %}
+          <div class="badge-icon">{{ badge.icon }}</div>
+          <div class="badge-name">{{ badge.name }}</div>
+          <div class="badge-desc">{{ badge.description }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Cashback stats card -->
+  <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700;">Cashback Rewards</h3>
+    
+    <div style="background: var(--bg-card2); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+      <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Cashback Balance</div>
+      <div style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-top: 0.5rem;">
+        ₦{{ wallet.cashback_balance|floatformat:2 }}
+      </div>
+    </div>
+
+    <form method="POST" action="{% url 'rewards' %}">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="redeem_cashback">
+      <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;" {% if wallet.cashback_balance == 0 %}disabled{% endif %}>
+        Redeem to Balance
+      </button>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

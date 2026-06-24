@@ -1,0 +1,67 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Buy Data – Payvora{% endblock %}
+{% block header_title %}Buy Data Plan{% endblock %}
+
+{% block dash_content %}
+<h1 class="page-title">📶 Buy Data</h1>
+<p class="page-subtitle">Select a mobile network, choose a plan, and enter the recipient's phone number.</p>
+
+<div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">
+  
+  <div>
+    <!-- Network Tabs Selector -->
+    <div class="network-tabs">
+      {% for net in networks %}
+        <a href="?network={{ net }}" class="network-tab {% if selected_network == net %}active{% endif %}">
+          <span class="net-dot net-{{ net|lower }}"></span>
+          {{ net }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <!-- Data Plans Grid -->
+    <div class="plans-grid">
+      {% for plan in plans %}
+        <div class="plan-card" data-plan-id="{{ plan.id }}" data-plan-price="{{ plan.price }}" data-plan-name="{{ plan.name }}">
+          <div class="plan-volume">{{ plan.volume }}</div>
+          <div class="plan-name">{{ plan.name }}</div>
+          <div class="plan-validity">Validity: {{ plan.validity }}</div>
+          <div class="plan-price">₦{{ plan.price|floatformat:0 }}</div>
+        </div>
+      {% empty %}
+        <p style="color: var(--text-muted); grid-column: 1 / -1; padding: 2rem; text-align: center; background: var(--bg-card); border-radius: var(--radius);">
+          No active plans available for {{ selected_network }} at the moment.
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Sidebar Purchase Form Card -->
+  <div class="card" style="padding: 1.5rem; position: sticky; top: 1.5rem;">
+    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;">Order Details</h3>
+    
+    <form method="POST" action="{% url 'purchase_data' %}">
+      {% csrf_token %}
+      <input type="hidden" name="plan_id" id="selected_plan_id" required>
+
+      <div class="form-group">
+        <label class="form-label" for="phone_number">Phone Number</label>
+        <div style="position: relative;">
+          <input type="tel" name="phone" id="phone_number" class="form-control" placeholder="08031234567" data-autodetect-network="detected_network_label" required>
+          <span id="detected_network_label" class="detected-network badge-network" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none;">Unknown</span>
+        </div>
+      </div>
+
+      <div style="margin: 1.5rem 0; padding-top: 1.25rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Total Price:</span>
+        <span id="plan_price_display" style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--accent);">₦0.00</span>
+      </div>
+
+      <button type="submit" id="buy_data_btn" class="btn btn-primary" style="width: 100%; justify-content: center;" disabled>
+        Select a Plan
+      </button>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

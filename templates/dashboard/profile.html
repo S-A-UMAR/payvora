@@ -1,0 +1,71 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}My Profile – Payvora{% endblock %}
+{% block header_title %}My Profile{% endblock %}
+
+{% block dash_content %}
+<h1 class="page-title">👤 My Profile</h1>
+<p class="page-subtitle">Manage your personal information and view account metrics.</p>
+
+<div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 800px; margin-top: 1.5rem;">
+  
+  <!-- Profile details card -->
+  <div class="card" style="padding: 2rem;">
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">Edit Personal Info</h2>
+    <form method="POST" action="{% url 'profile' %}">
+      {% csrf_token %}
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.25rem;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="first_name">First Name</label>
+          <input type="text" name="first_name" id="first_name" class="form-control" value="{{ request.user.first_name }}" placeholder="First Name">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="last_name">Last Name</label>
+          <input type="text" name="last_name" id="last_name" class="form-control" value="{{ request.user.last_name }}" placeholder="Last Name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" name="email" id="email" class="form-control" value="{{ request.user.email }}" placeholder="you@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="phone">Phone Number</label>
+        <input type="tel" name="phone" id="phone" class="form-control" value="{{ request.user.profile.phone }}" placeholder="Phone Number" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">Save Changes</button>
+    </form>
+  </div>
+
+  <!-- Account Details (Badges, Referral, Level Info) -->
+  <div class="card" style="padding: 2rem;">
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">Membership & Stats</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+      <div style="background: var(--bg-card2); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Membership Role</div>
+        <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-top: 0.5rem;">
+          {{ request.user.profile.get_role_display }}
+        </div>
+      </div>
+      
+      <div style="background: var(--bg-card2); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Level & XP</div>
+        <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary-light); margin-top: 0.5rem;">
+          Lvl {{ request.user.profile.level }} <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">({{ request.user.profile.xp }} XP)</span>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-card2); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Referral Code</div>
+        <div style="font-size: 1.4rem; font-weight: 700; color: var(--text); margin-top: 0.5rem;">
+          {{ request.user.profile.referral_code }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

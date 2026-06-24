@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sign Up – Payvora{% endblock %}
+
+{% block body %}
+<div class="page-center">
+  <div class="auth-card" style="max-width: 480px;">
+    <a href="{% url 'landing' %}" class="auth-logo">
+      <div class="auth-logo-icon">💜</div>
+      <span class="auth-logo-text">Payvora</span>
+    </a>
+    
+    <h2 class="auth-title">Create Account</h2>
+    <p class="auth-sub">Earn cashback and commissions. Start transacting in seconds.</p>
+
+    {% if messages %}
+    <div class="alerts-container" style="margin-bottom: 1.5rem;">
+      {% for msg in messages %}
+        <div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}">
+          {% if msg.tags == 'error' %}❌{% elif msg.tags == 'success' %}✅{% elif msg.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+          {{ msg }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'register' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="Choose a username" value="{{ values.username|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" name="email" id="email" class="form-control" placeholder="you@example.com" value="{{ values.email|default:'' }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="phone">Phone Number</label>
+        <input type="tel" name="phone" id="phone" class="form-control" placeholder="e.g. 08031234567" value="{{ values.phone|default:'' }}" required>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="••••••" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password2">Confirm</label>
+          <input type="password" name="password2" id="password2" class="form-control" placeholder="••••••" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="referral_code">Referral Code (Optional)</label>
+        <input type="text" name="referral_code" id="referral_code" class="form-control" placeholder="Enter code if referred" value="{% if request.GET.ref %}{{ request.GET.ref }}{% else %}{{ values.referral_code|default:'' }}{% endif %}">
+
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="width: 100%; margin-top: 0.5rem; justify-content: center;">
+        Sign Up
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="{% url 'login' %}">Sign In</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

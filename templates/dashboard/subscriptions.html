@@ -1,0 +1,97 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Auto-Renew Schedules – Payvora{% endblock %}
+{% block header_title %}Auto-Renew Schedules{% endblock %}
+
+{% block dash_content %}
+<h1 class="page-title">🔄 Auto-Renew Subscriptions</h1>
+<p class="page-subtitle">Schedule automatic data renewals and never worry about running out of internet data again.</p>
+
+<div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">
+  
+  <!-- Active subscriptions list -->
+  <div class="card" style="padding: 1.5rem;">
+    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;">Active Schedules</h3>
+    
+    <div style="overflow-x: auto;">
+      <table class="table" style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">
+            <th style="padding: 0.75rem 0.5rem;">Plan</th>
+            <th style="padding: 0.75rem 0.5rem;">Phone Number</th>
+            <th style="padding: 0.75rem 0.5rem;">Schedule</th>
+            <th style="padding: 0.75rem 0.5rem;">Price</th>
+            <th style="padding: 0.75rem 0.5rem;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sub in subs %}
+            <tr style="border-bottom: 1px solid var(--border); font-size: 0.9rem;">
+              <td style="padding: 0.75rem 0.5rem;">
+                <span class="badge" style="background: var(--bg-card2); border: 1px solid var(--border); padding: 0.25rem 0.5rem; font-weight: 600;">
+                  {{ sub.plan.network }}
+                </span>
+                {{ sub.plan.volume }} ({{ sub.plan.name }})
+              </td>
+              <td style="padding: 0.75rem 0.5rem;">{{ sub.phone_number }}</td>
+              <td style="padding: 0.75rem 0.5rem; text-transform: capitalize;">{{ sub.schedule }}</td>
+              <td style="padding: 0.75rem 0.5rem; font-weight: 600; color: var(--accent);">₦{{ sub.amount|floatformat:0 }}</td>
+              <td style="padding: 0.75rem 0.5rem;">
+                <form method="POST" action="{% url 'cancel_subscription' sub.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this scheduled top-up?');">
+                    Cancel
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                You do not have any auto-renew subscriptions active.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Create subscription form -->
+  <div class="card" style="padding: 1.5rem; position: sticky; top: 1.5rem;">
+    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;">Create Schedule</h3>
+    
+    <form method="POST" action="{% url 'subscriptions' %}">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="plan_select">Select Plan</label>
+        <select name="plan_id" id="plan_select" class="form-control" required>
+          <option value="">Choose data plan</option>
+          {% for plan in plans %}
+            <option value="{{ plan.id }}">{{ plan.network }} – {{ plan.volume }} (₦{{ plan.price|floatformat:0 }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="sub_phone">Recipient Phone</label>
+        <input type="tel" name="phone" id="sub_phone" class="form-control" placeholder="08031234567" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="schedule_select">Schedules Interval</label>
+        <select name="schedule" id="schedule_select" class="form-control" required>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly" selected>Monthly</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+        Start Schedule
+      </button>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

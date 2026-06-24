@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+<div class="dash-layout">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">💜</div>
+      <span class="logo-text">Payvora</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Main</span>
+      <a href="{% url 'dashboard_overview' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard_overview' %}active{% endif %}">
+        <span class="nav-icon">🏠</span> Overview
+      </a>
+      <a href="{% url 'wallet' %}" class="nav-link {% if request.resolver_match.url_name == 'wallet' %}active{% endif %}">
+        <span class="nav-icon">💳</span> Wallet
+      </a>
+
+      <span class="nav-section-label">Services</span>
+      <a href="{% url 'buy_data' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_data' %}active{% endif %}">
+        <span class="nav-icon">📶</span> Buy Data
+      </a>
+      <a href="{% url 'buy_airtime' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_airtime' %}active{% endif %}">
+        <span class="nav-icon">📞</span> Buy Airtime
+      </a>
+      <a href="{% url 'buy_electricity' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_electricity' %}active{% endif %}">
+        <span class="nav-icon">⚡</span> Electricity
+      </a>
+      <a href="{% url 'buy_tv' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_tv' %}active{% endif %}">
+        <span class="nav-icon">📺</span> TV / Cable
+      </a>
+      <a href="{% url 'buy_exam' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_exam' %}active{% endif %}">
+        <span class="nav-icon">📝</span> Exam Pins
+      </a>
+
+      <span class="nav-section-label">Account</span>
+      <a href="{% url 'referrals' %}" class="nav-link {% if request.resolver_match.url_name == 'referrals' %}active{% endif %}">
+        <span class="nav-icon">🤝</span> Referrals
+      </a>
+      <a href="{% url 'rewards' %}" class="nav-link {% if request.resolver_match.url_name == 'rewards' %}active{% endif %}">
+        <span class="nav-icon">🏆</span> Rewards
+      </a>
+      <a href="{% url 'subscriptions' %}" class="nav-link {% if request.resolver_match.url_name == 'subscriptions' %}active{% endif %}">
+        <span class="nav-icon">🔄</span> Auto-Renew
+      </a>
+      <a href="{% url 'notifications' %}" class="nav-link {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
+        <span class="nav-icon">🔔</span> Notifications
+        {% if notifications_unread and notifications_unread > 0 %}
+          <span class="nav-badge">{{ notifications_unread }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'support' %}" class="nav-link {% if request.resolver_match.url_name == 'support' %}active{% endif %}">
+        <span class="nav-icon">🎧</span> Support
+      </a>
+      {% if request.user.is_staff %}
+        <span class="nav-section-label">Admin</span>
+        <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+          <span class="nav-icon">📊</span> Admin Dashboard
+        </a>
+      {% endif %}
+    </nav>
+
+
+    <div class="sidebar-footer">
+      <a href="{% url 'profile' %}" class="sidebar-user" style="text-decoration:none;">
+        <div class="user-avatar">{{ request.user.username|first|upper }}</div>
+        <div class="user-info">
+          <div class="user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+          <div class="user-role">{{ request.user.profile.get_role_display }}</div>
+        </div>
+        <span style="color:var(--text-dim); font-size:0.85rem;">⚙️</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="dash-main">
+    <header class="dash-header">
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+        <span class="header-title">{% block header_title %}Dashboard{% endblock %}</span>
+      </div>
+      <div class="header-actions">
+        <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">☀️</button>
+        <a href="{% url 'notifications' %}" class="icon-btn" aria-label="Notifications">
+          🔔
+          {% if notifications_unread and notifications_unread > 0 %}
+            <span class="notif-dot"></span>
+          {% endif %}
+        </a>
+        <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">Sign Out</a>
+      </div>
+    </header>
+
+    <div class="dash-content">
+      {% if messages %}
+      <div class="alerts-container">
+        {% for msg in messages %}
+          <div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}">
+            {% if msg.tags == 'error' %}❌{% elif msg.tags == 'success' %}✅{% elif msg.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+            {{ msg }}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% block dash_content %}{% endblock %}
+    </div>
+  </main>
+
+</div>
+{% endblock %}

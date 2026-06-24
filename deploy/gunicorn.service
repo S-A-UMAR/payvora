@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn daemon for Payvora VTU application
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/VTU
+ExecStart=/home/ubuntu/VTU/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind 127.0.0.1:8000 \
+          config.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

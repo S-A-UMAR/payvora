@@ -1,0 +1,57 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Buy Electricity – Payvora{% endblock %}
+{% block header_title %}Electricity Bill{% endblock %}
+
+{% block dash_content %}
+<h1 class="page-title">⚡ Electricity Bills</h1>
+<p class="page-subtitle">Pay your electricity bills instantly and receive token tokens generated in real-time.</p>
+
+<div style="max-width: 600px; margin-top: 1.5rem;">
+  <div class="card" style="padding: 2rem;">
+    
+    <form method="POST" action="{% url 'buy_electricity' %}">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="disco_select">Distribution Company (DISCO)</label>
+        <select name="disco" id="disco_select" class="form-control" required>
+          <option value="">Select DISCO provider</option>
+          {% for disco in discos %}
+            <option value="{{ disco }}">{{ disco }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Meter Type</label>
+        <div style="display: flex; gap: 1.5rem; margin-top: 0.25rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer;">
+            <input type="radio" name="meter_type" value="prepaid" checked style="accent-color: var(--primary);">
+            Prepaid
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer;">
+            <input type="radio" name="meter_type" value="postpaid" style="accent-color: var(--primary);">
+            Postpaid
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="meter_number">Meter Number</label>
+        <input type="text" name="meter" id="meter_number" class="form-control" placeholder="Enter meter number" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="bill_amount">Amount (₦)</label>
+        <input type="number" name="amount" id="bill_amount" class="form-control" placeholder="e.g. 2000" min="500" required>
+      </div>
+
+      <div style="padding-top: 1.25rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 1rem; align-items: center;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">0.5% Cashback Earned</span>
+        <button type="submit" class="btn btn-primary">Pay Bill</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

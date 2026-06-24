@@ -1,0 +1,159 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Admin Dashboard – Payvora{% endblock %}
+{% block header_title %}Admin Dashboard{% endblock %}
+
+{% block dash_content %}
+<h1 class="page-title">📊 Admin Dashboard</h1>
+<p class="page-subtitle">Platform overview, transactions, and support tickets</p>
+
+{% if messages %}
+  {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }}" style="margin-bottom:1rem; padding:0.8rem 1rem; border-radius:var(--radius-sm); background:rgba(108,99,255,0.12); border:1px solid var(--primary); color:var(--text); font-size:0.88rem;">
+      {{ msg }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<!-- Stats Grid -->
+<div class="stats-grid" style="margin-bottom:2rem;">
+  <div class="card card-sm">
+    <div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Total Users</div>
+    <div style="font-size:2rem;font-weight:800;font-family:'Outfit',sans-serif;">{{ total_users }}</div>
+  </div>
+  <div class="card card-sm">
+    <div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">All Transactions</div>
+    <div style="font-size:2rem;font-weight:800;font-family:'Outfit',sans-serif;">{{ total_tx }}</div>
+    <div style="font-size:0.75rem;color:var(--success);margin-top:.2rem;">✓ {{ success_tx }} success &nbsp;·&nbsp; <span style="color:var(--danger);">✗ {{ failed_tx }} failed</span></div>
+  </div>
+  <div class="card card-sm">
+    <div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Total Volume</div>
+    <div style="font-size:2rem;font-weight:800;font-family:'Outfit',sans-serif;">₦{{ total_volume|floatformat:2 }}</div>
+  </div>
+  <div class="card card-sm">
+    <div style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Wallet Balances</div>
+    <div style="font-size:2rem;font-weight:800;font-family:'Outfit',sans-serif;">₦{{ total_wallets|floatformat:2 }}</div>
+    <div style="font-size:0.75rem;color:var(--text-muted);margin-top:.2rem;">Cashback pool: ₦{{ total_cashback|floatformat:2 }}</div>
+  </div>
+</div>
+
+<!-- Weekly Chart -->
+<div class="card" style="margin-bottom:2rem;">
+  <div style="font-size:0.9rem;font-weight:700;margin-bottom:1.25rem;">📈 Last 7 Days – Transaction Volume</div>
+  <canvas id="weeklyChart" height="90"></canvas>
+</div>
+
+<!-- Support Tickets -->
+<div class="card">
+  <div style="font-size:0.9rem;font-weight:700;margin-bottom:1.25rem;">🎧 Support Tickets ({{ tickets.count }})</div>
+  {% if tickets %}
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);color:var(--text-dim);text-align:left;">
+            <th style="padding:.6rem .75rem;">#</th>
+            <th style="padding:.6rem .75rem;">User</th>
+            <th style="padding:.6rem .75rem;">Subject</th>
+            <th style="padding:.6rem .75rem;">Status</th>
+            <th style="padding:.6rem .75rem;">Date</th>
+            <th style="padding:.6rem .75rem;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ticket in tickets %}
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:.6rem .75rem;color:var(--text-muted);">{{ ticket.id }}</td>
+            <td style="padding:.6rem .75rem;font-weight:600;">{{ ticket.user.username }}</td>
+            <td style="padding:.6rem .75rem;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ ticket.subject }}</td>
+            <td style="padding:.6rem .75rem;">
+              <span class="ticket-{{ ticket.status }}" style="font-size:0.78rem;font-weight:700;text-transform:capitalize;">{{ ticket.status|title }}</span>
+            </td>
+            <td style="padding:.6rem .75rem;color:var(--text-muted);font-size:0.78rem;">{{ ticket.created_at|date:"M j, Y" }}</td>
+            <td style="padding:.6rem .75rem;">
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="ticket_id" value="{{ ticket.id }}">
+                {% if ticket.status == 'open' or ticket.status == 'in_progress' %}
+                  <input type="hidden" name="action" value="resolve">
+                  <button type="submit" class="btn btn-sm" style="font-size:0.75rem;padding:.25rem .65rem;background:rgba(52,211,153,0.15);color:var(--success);border:1px solid var(--success);">Resolve</button>
+                {% else %}
+                  <input type="hidden" name="action" value="reopen">
+                  <button type="submit" class="btn btn-sm" style="font-size:0.75rem;padding:.25rem .65rem;background:rgba(108,99,255,0.12);color:var(--primary-light);border:1px solid var(--primary);">Reopen</button>
+                {% endif %}
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🎉</div>
+      <p>No support tickets yet.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  const stats = {{ weekly_stats|safe }};
+  const labels = stats.map(s => s.label);
+  const volumes = stats.map(s => s.volume);
+  const counts = stats.map(s => s.count);
+
+  const ctx = document.getElementById('weeklyChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Volume (₦)',
+          data: volumes,
+          backgroundColor: 'rgba(108,99,255,0.5)',
+          borderColor: 'rgba(108,99,255,1)',
+          borderWidth: 1.5,
+          borderRadius: 6,
+          yAxisID: 'y',
+        },
+        {
+          label: 'Count',
+          data: counts,
+          type: 'line',
+          borderColor: 'rgba(251,191,36,0.9)',
+          backgroundColor: 'rgba(251,191,36,0.12)',
+          pointBackgroundColor: 'rgba(251,191,36,1)',
+          borderWidth: 2,
+          tension: 0.4,
+          fill: true,
+          yAxisID: 'y1',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } },
+        tooltip: { backgroundColor: '#1e2235', titleColor: '#fff', bodyColor: 'rgba(255,255,255,0.75)' }
+      },
+      scales: {
+        x: { ticks: { color: 'rgba(255,255,255,0.5)' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: {
+          type: 'linear', position: 'left',
+          ticks: { color: 'rgba(255,255,255,0.5)', callback: v => '₦' + v.toLocaleString() },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
+        y1: {
+          type: 'linear', position: 'right',
+          ticks: { color: 'rgba(251,191,36,0.7)' },
+          grid: { drawOnChartArea: false }
+        }
+      }
+    }
+  });
+})();
+</script>
+{% endblock %}

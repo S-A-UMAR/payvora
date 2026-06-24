@@ -1,0 +1,43 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Buy Exam Pins – Payvora{% endblock %}
+{% block header_title %}Exam Result Pins{% endblock %}
+
+{% block dash_content %}
+<h1 class="page-title">📝 Exam Pins</h1>
+<p class="page-subtitle">Purchase WAEC, NECO, NABTEB, and JAMB registration or result checking pins instantly.</p>
+
+<div style="max-width: 600px; margin-top: 1.5rem;">
+  <div class="card" style="padding: 2rem;">
+    
+    <form method="POST" action="{% url 'buy_exam' %}">
+      {% csrf_token %}
+      <input type="hidden" name="unit_price" id="exam_unit_price" required>
+
+      <div class="form-group">
+        <label class="form-label" for="exam_type">Exam Type</label>
+        <select name="exam" id="exam_type" class="form-control" required>
+          {% for exam_name, exam_price in exam_types %}
+            <option value="{{ exam_name }}" data-price="{{ exam_price }}">{{ exam_name }} – ₦{{ exam_price|floatformat:0 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="exam_qty">Quantity</label>
+        <input type="number" name="quantity" id="exam_qty" class="form-control" value="1" min="1" max="10" required>
+      </div>
+
+      <div style="margin: 1.5rem 0; padding-top: 1.25rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Total Price:</span>
+        <span id="exam_total_display" style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--accent);">₦0.00</span>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; align-items: center;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">0.5% Cashback Earned</span>
+        <button type="submit" class="btn btn-primary">Generate Pin(s)</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
