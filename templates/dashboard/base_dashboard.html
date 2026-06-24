@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load icons %}
 {% block body %}
 <div class="dash-layout">
 
@@ -9,59 +10,59 @@
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">💜</div>
+      <div class="logo-icon">{% icon 'home' size='24' %}</div>
       <span class="logo-text">Payvora</span>
     </div>
 
     <nav class="sidebar-nav">
       <span class="nav-section-label">Main</span>
       <a href="{% url 'dashboard_overview' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard_overview' %}active{% endif %}">
-        <span class="nav-icon">🏠</span> Overview
+        <span class="nav-icon">{% icon 'home' %}</span> Overview
       </a>
       <a href="{% url 'wallet' %}" class="nav-link {% if request.resolver_match.url_name == 'wallet' %}active{% endif %}">
-        <span class="nav-icon">💳</span> Wallet
+        <span class="nav-icon">{% icon 'wallet' %}</span> Wallet
       </a>
 
       <span class="nav-section-label">Services</span>
       <a href="{% url 'buy_data' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_data' %}active{% endif %}">
-        <span class="nav-icon">📶</span> Buy Data
+        <span class="nav-icon">{% icon 'data' %}</span> Buy Data
       </a>
       <a href="{% url 'buy_airtime' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_airtime' %}active{% endif %}">
-        <span class="nav-icon">📞</span> Buy Airtime
+        <span class="nav-icon">{% icon 'phone' %}</span> Buy Airtime
       </a>
       <a href="{% url 'buy_electricity' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_electricity' %}active{% endif %}">
-        <span class="nav-icon">⚡</span> Electricity
+        <span class="nav-icon">{% icon 'electricity' %}</span> Electricity
       </a>
       <a href="{% url 'buy_tv' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_tv' %}active{% endif %}">
-        <span class="nav-icon">📺</span> TV / Cable
+        <span class="nav-icon">{% icon 'tv' %}</span> TV / Cable
       </a>
       <a href="{% url 'buy_exam' %}" class="nav-link {% if request.resolver_match.url_name == 'buy_exam' %}active{% endif %}">
-        <span class="nav-icon">📝</span> Exam Pins
+        <span class="nav-icon">{% icon 'exam' %}</span> Exam Pins
       </a>
 
       <span class="nav-section-label">Account</span>
       <a href="{% url 'referrals' %}" class="nav-link {% if request.resolver_match.url_name == 'referrals' %}active{% endif %}">
-        <span class="nav-icon">🤝</span> Referrals
+        <span class="nav-icon">{% icon 'referral' %}</span> Referrals
       </a>
       <a href="{% url 'rewards' %}" class="nav-link {% if request.resolver_match.url_name == 'rewards' %}active{% endif %}">
-        <span class="nav-icon">🏆</span> Rewards
+        <span class="nav-icon">{% icon 'rewards' %}</span> Rewards
       </a>
       <a href="{% url 'subscriptions' %}" class="nav-link {% if request.resolver_match.url_name == 'subscriptions' %}active{% endif %}">
-        <span class="nav-icon">🔄</span> Auto-Renew
+        <span class="nav-icon">{% icon 'autorenew' %}</span> Auto-Renew
       </a>
       <a href="{% url 'notifications' %}" class="nav-link {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
-        <span class="nav-icon">🔔</span> Notifications
+        <span class="nav-icon">{% icon 'notification' %}</span> Notifications
         {% if notifications_unread and notifications_unread > 0 %}
           <span class="nav-badge">{{ notifications_unread }}</span>
         {% endif %}
       </a>
       <a href="{% url 'support' %}" class="nav-link {% if request.resolver_match.url_name == 'support' %}active{% endif %}">
-        <span class="nav-icon">🎧</span> Support
+        <span class="nav-icon">{% icon 'support' %}</span> Support
       </a>
       {% if request.user.is_staff %}
         <span class="nav-section-label">Admin</span>
         <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
-          <span class="nav-icon">📊</span> Admin Dashboard
+          <span class="nav-icon">{% icon 'admin' %}</span> Admin Dashboard
         </a>
       {% endif %}
     </nav>
@@ -74,7 +75,7 @@
           <div class="user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
           <div class="user-role">{{ request.user.profile.get_role_display }}</div>
         </div>
-        <span style="color:var(--text-dim); font-size:0.85rem;">⚙️</span>
+        <span style="color:var(--text-dim); font-size:0.85rem;">{% icon 'settings' %}</span>
       </a>
     </div>
   </aside>
@@ -83,13 +84,13 @@
   <main class="dash-main">
     <header class="dash-header">
       <div style="display:flex; align-items:center; gap:1rem;">
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">{% icon 'menu' %}</button>
         <span class="header-title">{% block header_title %}Dashboard{% endblock %}</span>
       </div>
       <div class="header-actions">
-        <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">☀️</button>
+        <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">{% icon 'theme' %}</button>
         <a href="{% url 'notifications' %}" class="icon-btn" aria-label="Notifications">
-          🔔
+          {% icon 'notification' %}
           {% if notifications_unread and notifications_unread > 0 %}
             <span class="notif-dot"></span>
           {% endif %}
@@ -103,7 +104,7 @@
       <div class="alerts-container">
         {% for msg in messages %}
           <div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}">
-            {% if msg.tags == 'error' %}❌{% elif msg.tags == 'success' %}✅{% elif msg.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+            {% if msg.tags == 'error' %}{% icon 'error' %}{% elif msg.tags == 'success' %}{% icon 'check' %}{% elif msg.tags == 'warning' %}{% icon 'warning' %}{% else %}{% icon 'info' %}{% endif %}
             {{ msg }}
           </div>
         {% endfor %}

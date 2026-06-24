@@ -1,4 +1,5 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Rewards &amp; Achievements – Payvora{% endblock %}
 {% block header_title %}Rewards &amp; Badges{% endblock %}
 
@@ -87,7 +88,7 @@
   }
 </style>
 
-<h1 class="page-title">🏆 Rewards &amp; Badges</h1>
+<h1 class="page-title">{% icon 'rewards' %} Rewards &amp; Badges</h1>
 <p class="page-subtitle">Earn experience points (XP) and cashback for every transaction, level up, and unlock achievements.</p>
 
 <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">
@@ -97,7 +98,7 @@
     <div class="progress-container">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span style="font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text);">
-          ⭐ Level {{ profile.level }}
+          {% icon 'admin' %} Level {{ profile.level }}
         </span>
         <span style="font-size: 0.85rem; color: var(--text-muted);">
           {{ xp_in_level }} / 100 XP to Level {{ profile.level|add:1 }}

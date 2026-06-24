@@ -1,9 +1,10 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Notifications – Payvora{% endblock %}
 {% block header_title %}Notifications{% endblock %}
 
 {% block dash_content %}
-<h1 class="page-title">🔔 Notifications</h1>
+<h1 class="page-title">{% icon 'notification' %} Notifications</h1>
 <p class="page-subtitle">Stay updated on your account transactions, referral bonuses, and system updates.</p>
 
 <div style="max-width: 700px; margin-top: 1.5rem;">
@@ -11,7 +12,7 @@
     {% for notif in notifications %}
       <div style="display: flex; gap: 1rem; align-items: flex-start; padding: 1rem; border-radius: var(--radius-sm); background: var(--bg-card2); border: 1px solid var(--border); transition: border-color var(--transition);">
         <div style="font-size: 1.5rem; background: rgba(108,99,255,0.08); border-radius: var(--radius-sm); width: 44px; height: 44px; display: grid; place-items: center; flex-shrink: 0; color: var(--primary-light);">
-          {{ notif.icon|default:"🔔" }}
+          {{ notif.icon|default:"{% icon 'notification' %}" }}
         </div>
         <div style="flex-grow: 1;">
           <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem;">

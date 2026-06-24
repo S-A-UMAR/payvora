@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load icons %}
 {% block title %}Secure Checkout – Payvora{% endblock %}
 {% block body %}
 <div class="checkout-wrapper">
@@ -13,7 +14,7 @@
 
     <div class="checkout-body">
       <div class="checkout-tabs">
-        <div class="checkout-tab active" data-tab="card">💳 Card</div>
+        <div class="checkout-tab active" data-tab="card">{% icon 'wallet' %} Card</div>
         <div class="checkout-tab" data-tab="transfer">🏦 Transfer</div>
         <div class="checkout-tab" data-tab="ussd">📱 USSD</div>
       </div>

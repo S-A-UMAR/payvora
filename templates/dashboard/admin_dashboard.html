@@ -1,9 +1,10 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Admin Dashboard – Payvora{% endblock %}
 {% block header_title %}Admin Dashboard{% endblock %}
 
 {% block dash_content %}
-<h1 class="page-title">📊 Admin Dashboard</h1>
+<h1 class="page-title">{% icon 'admin' %} Admin Dashboard</h1>
 <p class="page-subtitle">Platform overview, transactions, and support tickets</p>
 
 {% if messages %}
@@ -44,7 +45,7 @@
 
 <!-- Support Tickets -->
 <div class="card">
-  <div style="font-size:0.9rem;font-weight:700;margin-bottom:1.25rem;">🎧 Support Tickets ({{ tickets.count }})</div>
+  <div style="font-size:0.9rem;font-weight:700;margin-bottom:1.25rem;">{% icon 'support' %} Support Tickets ({{ tickets.count }})</div>
   {% if tickets %}
     <div style="overflow-x:auto;">
       <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
@@ -88,7 +89,7 @@
     </div>
   {% else %}
     <div class="empty-state">
-      <div class="empty-icon">🎉</div>
+      <div class="empty-icon">{% icon 'info' size='48' %}</div>
       <p>No support tickets yet.</p>
     </div>
   {% endif %}

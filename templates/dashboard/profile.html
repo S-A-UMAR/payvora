@@ -1,9 +1,10 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}My Profile – Payvora{% endblock %}
 {% block header_title %}My Profile{% endblock %}
 
 {% block dash_content %}
-<h1 class="page-title">👤 My Profile</h1>
+<h1 class="page-title">{% icon 'home' %} My Profile</h1>
 <p class="page-subtitle">Manage your personal information and view account metrics.</p>
 
 <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; max-width: 800px; margin-top: 1.5rem;">

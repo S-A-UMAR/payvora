@@ -1,18 +1,19 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Overview – Payvora{% endblock %}
 {% block header_title %}Overview{% endblock %}
 {% block dash_content %}
-<h1 class="page-title">Welcome back, {{ request.user.get_full_name|default:request.user.username }} 👋</h1>
+<h1 class="page-title">Welcome back, {{ request.user.get_full_name|default:request.user.username }}</h1>
 <p class="page-subtitle">Here's a snapshot of your Payvora account</p>
 
 <!-- Wallet Hero -->
 <div class="wallet-hero">
   <div class="wallet-hero-content">
-    <div class="wallet-label">💳 Wallet Balance</div>
+    <div class="wallet-label">{% icon 'wallet' %} Wallet Balance</div>
     <div class="wallet-amount">₦{{ wallet.balance|floatformat:2 }}</div>
     <div class="wallet-actions">
       <a href="{% url 'wallet' %}" class="btn btn-outline">View Wallet</a>
-      <a href="{% url 'wallet' %}" class="btn btn-accent" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.4);">+ Fund Wallet</a>
+      <a href="{% url 'wallet' %}" class="btn btn-accent" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.4);">{% icon 'fund' %} Fund Wallet</a>
     </div>
   </div>
 </div>
@@ -20,33 +21,33 @@
 <!-- Stats -->
 <div class="stats-grid">
   <div class="stat-card" style="--stat-color: var(--accent);">
-    <div class="stat-icon">📶</div>
+    <div class="stat-icon">{% icon 'data' size='28' %}</div>
     <div class="stat-label">Total Transactions</div>
     <div class="stat-value">{{ request.user.transactions.count }}</div>
     <div class="stat-sub">All time</div>
   </div>
   <div class="stat-card" style="--stat-color: var(--warning);">
-    <div class="stat-icon">🏆</div>
+    <div class="stat-icon">{% icon 'rewards' size='28' %}</div>
     <div class="stat-label">Cashback Balance</div>
     <div class="stat-value">₦{{ wallet.cashback_balance|floatformat:2 }}</div>
-    <div class="stat-sub"><a href="{% url 'rewards' %}" style="color:var(--primary-light);">Redeem →</a></div>
+    <div class="stat-sub"><a href="{% url 'rewards' %}" style="color:var(--primary-light);">Redeem {% icon 'arrow-right' %}</a></div>
   </div>
   <div class="stat-card" style="--stat-color: var(--primary);">
-    <div class="stat-icon">⭐</div>
+    <div class="stat-icon">{% icon 'admin' size='28' %}</div>
     <div class="stat-label">XP / Level</div>
     <div class="stat-value">{{ profile.xp }} XP</div>
     <div class="stat-sub">Level {{ profile.level }}</div>
   </div>
   <div class="stat-card" style="--stat-color: var(--success);">
-    <div class="stat-icon">🤝</div>
+    <div class="stat-icon">{% icon 'referral' size='28' %}</div>
     <div class="stat-label">Referrals</div>
     <div class="stat-value">{{ request.user.referred_users.count }}</div>
-    <div class="stat-sub"><a href="{% url 'referrals' %}" style="color:var(--primary-light);">View tree →</a></div>
+    <div class="stat-sub"><a href="{% url 'referrals' %}" style="color:var(--primary-light);">View tree {% icon 'arrow-right' %}</a></div>
   </div>
 </div>
 
 <!-- Quick Actions -->
-<h2 style="font-size:1.05rem; font-weight:700; margin-bottom:1rem;">⚡ Quick Actions</h2>
+<h2 style="font-size:1.05rem; font-weight:700; margin-bottom:1rem;">{% icon 'electricity' %} Quick Actions</h2>
 <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:0.85rem; margin-bottom:2rem;">
   {% for label, icon, url in services %}
   <a href="{{ url }}" class="card card-sm" style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.5rem; text-decoration:none; transition:all 0.2s ease;">
@@ -58,14 +59,14 @@
 
 <!-- Recent Transactions -->
 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-  <h2 style="font-size:1.05rem; font-weight:700;">🕐 Recent Transactions</h2>
-  <a href="{% url 'wallet' %}" style="font-size:0.82rem; color:var(--primary-light);">View all →</a>
+  <h2 style="font-size:1.05rem; font-weight:700;">{% icon 'wallet' %} Recent Transactions</h2>
+  <a href="{% url 'wallet' %}" style="font-size:0.82rem; color:var(--primary-light);">View all {% icon 'arrow-right' %}</a>
 </div>
 <div class="txn-list">
   {% for txn in transactions %}
   <div class="txn-item">
     <div class="txn-icon {% if txn.type == 'fund' %}fund{% elif txn.status == 'failed' %}failed{% elif txn.type == 'refund' %}refund{% else %}purchase{% endif %}">
-      {% if txn.type == 'fund' %}💰{% elif txn.service == 'data' %}📶{% elif txn.service == 'airtime' %}📞{% elif txn.service == 'electricity' %}⚡{% elif txn.service == 'tv' %}📺{% elif txn.service == 'exam' %}📝{% else %}💳{% endif %}
+      {% if txn.type == 'fund' %}{% icon 'fund' size='24' %}{% elif txn.service == 'data' %}{% icon 'data' size='24' %}{% elif txn.service == 'airtime' %}{% icon 'phone' size='24' %}{% elif txn.service == 'electricity' %}{% icon 'electricity' size='24' %}{% elif txn.service == 'tv' %}{% icon 'tv' size='24' %}{% elif txn.service == 'exam' %}{% icon 'exam' size='24' %}{% else %}{% icon 'wallet' size='24' %}{% endif %}
     </div>
     <div class="txn-desc">
       <div class="txn-name">{{ txn.get_type_display }}{% if txn.service %} – {{ txn.get_service_display }}{% endif %}</div>
@@ -80,7 +81,7 @@
   </div>
   {% empty %}
   <div class="empty-state">
-    <div class="empty-icon">💳</div>
+    <div class="empty-icon">{% icon 'wallet' size='48' %}</div>
     <p>No transactions yet. Fund your wallet to get started!</p>
     <a href="{% url 'wallet' %}" class="btn btn-primary btn-sm" style="margin-top:1rem;">Fund Wallet</a>
   </div>
@@ -90,12 +91,12 @@
 {% block extra_scripts %}
 <script>
 const serviceList = [
-  ['Buy Data','📶','{% url "buy_data" %}'],
-  ['Buy Airtime','📞','{% url "buy_airtime" %}'],
-  ['Electricity','⚡','{% url "buy_electricity" %}'],
-  ['TV / Cable','📺','{% url "buy_tv" %}'],
-  ['Exam Pins','📝','{% url "buy_exam" %}'],
-  ['Auto-Renew','🔄','{% url "subscriptions" %}'],
+  ['Buy Data','{% icon 'data' %}','{% url "buy_data" %}'],
+  ['Buy Airtime','{% icon 'phone' %}','{% url "buy_airtime" %}'],
+  ['Electricity','{% icon 'electricity' %}','{% url "buy_electricity" %}'],
+  ['TV / Cable','{% icon 'tv' %}','{% url "buy_tv" %}'],
+  ['Exam Pins','{% icon 'exam' %}','{% url "buy_exam" %}'],
+  ['Auto-Renew','{% icon 'autorenew' %}','{% url "subscriptions" %}'],
 ];
 // Inject quick action links
 document.addEventListener('DOMContentLoaded', () => {

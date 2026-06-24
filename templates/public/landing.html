@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load icons %}
 {% block title %}Payvora – Smart VTU & Bills Payment Platform{% endblock %}
 
 {% block body %}
 <!-- Navbar -->
 <header class="landing-nav">
   <div class="landing-logo">
-    <div class="landing-logo-icon">💜</div>
+    <div class="landing-logo-icon">{% icon 'home' size='28' %}</div>
     <span>Payvora</span>
   </div>
   <nav class="nav-links">
@@ -24,7 +25,7 @@
 <section class="hero-section">
   <div style="max-width: 800px;">
     <div class="hero-badge">
-      <span>⚡</span> Smart, Automated & Ultra-Fast VTU
+      <span>{% icon 'electricity' %}</span> Smart, Automated & Ultra-Fast VTU
     </div>
     <h1 class="hero-title">
       The Ultimate VTU & <span>Bill Payment</span> Platform
@@ -68,32 +69,32 @@
   
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon">📶</div>
+      <div class="feature-icon">{% icon 'data' size='32' %}</div>
       <h3 class="feature-title">Data & Airtime Top-Up</h3>
       <p class="feature-desc">Auto-detection of networks (MTN, Glo, Airtel, 9mobile) and instant delivery to any Nigerian mobile number.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">⚡</div>
+      <div class="feature-icon">{% icon 'electricity' size='32' %}</div>
       <h3 class="feature-title">Electricity Bills</h3>
       <p class="feature-desc">Pay for pre-paid and post-paid meters across all major DISCOs instantly with instant token generation.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">📺</div>
+      <div class="feature-icon">{% icon 'tv' size='32' %}</div>
       <h3 class="feature-title">TV Cable Subscription</h3>
       <p class="feature-desc">Never miss your favorite shows. Instantly renew DSTV, Gotv, and Startimes packages with auto-validation.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">🏆</div>
+      <div class="feature-icon">{% icon 'rewards' size='32' %}</div>
       <h3 class="feature-title">Gamified Rewards</h3>
       <p class="feature-desc">Earn experience points (XP) for every payment, level up, unlock achievements, and claim real cash rewards.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">🤝</div>
+      <div class="feature-icon">{% icon 'referral' size='32' %}</div>
       <h3 class="feature-title">Referrals Program</h3>
       <p class="feature-desc">Invite your friends using your unique referral code and earn commissions directly to your wallet on every purchase they make.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">🔄</div>
+      <div class="feature-icon">{% icon 'autorenew' size='32' %}</div>
       <h3 class="feature-title">Auto-Renewal Schedules</h3>
       <p class="feature-desc">Schedule data subscriptions weekly or monthly and let our system automatically run them so you never run out of data.</p>
     </div>

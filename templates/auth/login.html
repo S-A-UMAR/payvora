@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load icons %}
 {% block title %}Sign In – Payvora{% endblock %}
 
 {% block body %}
 <div class="page-center">
   <div class="auth-card">
     <a href="{% url 'landing' %}" class="auth-logo">
-      <div class="auth-logo-icon">💜</div>
+      <div class="auth-logo-icon">{% icon 'home' size='32' %}</div>
       <span class="auth-logo-text">Payvora</span>
     </a>
     
@@ -17,7 +18,7 @@
     <div class="alerts-container" style="margin-bottom: 1.5rem;">
       {% for msg in messages %}
         <div class="alert alert-{% if msg.tags == 'error' %}error{% elif msg.tags == 'success' %}success{% elif msg.tags == 'warning' %}warning{% else %}info{% endif %}">
-          {% if msg.tags == 'error' %}❌{% elif msg.tags == 'success' %}✅{% elif msg.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+          {% if msg.tags == 'error' %}{% icon 'error' %}{% elif msg.tags == 'success' %}{% icon 'check' %}{% elif msg.tags == 'warning' %}{% icon 'warning' %}{% else %}{% icon 'info' %}{% endif %}
           {{ msg }}
         </div>
       {% endfor %}

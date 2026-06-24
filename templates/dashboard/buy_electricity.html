@@ -1,9 +1,10 @@
 {% extends "dashboard/base_dashboard.html" %}
+{% load icons %}
 {% block title %}Buy Electricity – Payvora{% endblock %}
 {% block header_title %}Electricity Bill{% endblock %}
 
 {% block dash_content %}
-<h1 class="page-title">⚡ Electricity Bills</h1>
+<h1 class="page-title">{% icon 'electricity' %} Electricity Bills</h1>
 <p class="page-subtitle">Pay your electricity bills instantly and receive token tokens generated in real-time.</p>
 
 <div style="max-width: 600px; margin-top: 1.5rem;">
